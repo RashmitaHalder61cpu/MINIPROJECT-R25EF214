@@ -1,0 +1,82 @@
+=============================================================
+  PROMPT LOG — 2D Graphics Editor Mini Project (C Language)
+  Student: Preetam Nayak | Course: CSE-D | Mini Project
+=============================================================
+
+--- PROMPT 1 ---
+User:
+I have a mini project assignment in C language. The problem statement says:
+"Write a 2D graphics editor using * and ."
+Requirements:
+1. Write functions to draw a circle, rectangle, line, and triangle.
+2. You should be able to add objects to the picture, delete objects from the picture, and modify objects in the picture.
+3. Use a 2d array of characters to store the picture.
+4. Write a function to display the picture.
+Help me build this in C.
+
+AI (Claude):
+I will build a complete 2D text graphics editor in C with the following design:
+
+- A 2D character array (canvas[ROWS][COLS]) to store the picture, initialized with '.' characters.
+- Separate drawing functions for each shape:
+    draw_circle()    - Uses Bresenham/distance formula with aspect-ratio correction
+    draw_rectangle() - Border + fill using nested loops
+    draw_line()      - Bresenham's line algorithm
+    draw_triangle()  - Draws 3 sides via draw_line, fills interior via scanline
+- An Object struct to store shape type, position, size, and characters.
+- An objects[] array to track all added shapes (supports up to 50).
+- redraw_all() re-renders the full canvas from the object list each time.
+- Menu-driven interface: Add / List / Delete / Modify / Display / Save / Demo.
+
+--- PROMPT 2 ---
+User:
+The draw_circle function does not look round because character cells are taller than wide.
+How do I fix the aspect ratio?
+
+AI (Claude):
+To correct for terminal aspect ratio (characters are roughly 2x taller than wide),
+divide the horizontal distance by 2.0 when computing the distance from center:
+
+    double dx = (i - cx);
+    double dy = (j - cy) / 2.0;   // <-- aspect-ratio correction
+    double dist = sqrt(dx*dx + dy*dy);
+
+This makes circles appear visually round in a standard terminal.
+
+--- PROMPT 3 ---
+User:
+How should the triangle fill work?
+
+AI (Claude):
+A scanline fill is used. For each row between apex_row and base_row,
+compute the left and right edges by linear interpolation:
+
+    double t = (double)(row - apex_r) / height;
+    int left  = apex_c - half_base * t;
+    int right = apex_c + half_base * t;
+
+Then fill all columns from left+1 to right-1 with the fill character.
+The border is drawn separately using draw_line() for the three edges.
+
+--- PROMPT 4 ---
+User:
+How do I compile and run this program?
+
+AI (Claude):
+Use the provided Makefile:
+
+    make        # compiles graphics.c → ./graphics  (requires gcc and libm)
+    make run    # compile and run immediately
+    make clean  # remove compiled binary
+
+Or compile manually:
+    gcc -o graphics graphics.c -lm
+
+Run:
+    ./graphics
+
+Select option 10 (Load Demo) to see all four shapes rendered at once.
+
+=============================================================
+  END OF PROMPT LOG
+=============================================================
